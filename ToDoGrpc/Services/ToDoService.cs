@@ -79,9 +79,9 @@ public class ToDoService : ToDoIt.ToDoItBase
             throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid object"));
 
 
-        ToDoItem? toDoItem = await _dbContext.ToDoItems.FirstOrDefaultAsync(x => x.Id == request.Id) 
+        ToDoItem? toDoItem = await _dbContext.ToDoItems.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw new RpcException(new Status(StatusCode.NotFound, $"No Task with id {request.Id}"));
-        
+
         toDoItem.Title = request.Title;
         toDoItem.Description = request.Description;
         toDoItem.ToDoStatus = request.ToDoStatus;
@@ -89,6 +89,24 @@ public class ToDoService : ToDoIt.ToDoItBase
         await _dbContext.SaveChangesAsync();
 
         return await Task.FromResult(new UpdateToDoResponse
+        {
+            Id = toDoItem.Id
+        });
+    }
+
+    public override async Task<DeleteToDoResponse> DeleteToDo(DeleteToDoRequest request, ServerCallContext context)
+    {
+        if (request.Id <= 0)
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid object"));
+
+        ToDoItem? toDoItem = await _dbContext.ToDoItems.FirstOrDefaultAsync(x => x.Id == request.Id)
+            ?? throw new RpcException(new Status(StatusCode.NotFound, $"No Task with id {request.Id}"));
+
+        _dbContext.Remove(toDoItem);
+
+        await _dbContext.SaveChangesAsync();
+
+        return await Task.FromResult(new DeleteToDoResponse
         {
             Id = toDoItem.Id
         });
