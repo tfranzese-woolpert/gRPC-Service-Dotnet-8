@@ -52,4 +52,23 @@ public class ToDoService : ToDoIt.ToDoItBase
 
         throw new RpcException(new Status(StatusCode.NotFound, $"No Task with id {request.Id}"));
     }
+
+    public override async Task<GetAllResponse> ListToDo(GetAllRequest request, ServerCallContext context)
+    {
+        GetAllResponse response = new();
+        List<ToDoItem> toDoItems = await _dbContext.ToDoItems.ToListAsync();
+
+        toDoItems.ForEach(x =>
+        {
+            response.ToDo.Add(new ReadToDoResponse()
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                ToDoStatus = x.ToDoStatus
+            });
+        });
+    
+        return await Task.FromResult(response);
+    }
 }
