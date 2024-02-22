@@ -1,15 +1,17 @@
 ﻿{
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "http": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5267",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
+    // Remove or comment this if you want to use both gRPC and http/s
+    // Else there will be an error: Received RST_STREAM with code 2 triggered by internal client error: Protocol error
+    // "http": {
+    //   "commandName": "Project",
+    //   "dotnetRunMessages": true,
+    //   "launchBrowser": false,
+    //   "applicationUrl": "http://localhost:5267",
+    //   "environmentVariables": {
+    //     "ASPNETCORE_ENVIRONMENT": "Development"
+    //   }
+    // },
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
