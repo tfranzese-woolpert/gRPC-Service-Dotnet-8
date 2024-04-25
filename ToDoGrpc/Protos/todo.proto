@@ -46,9 +46,33 @@ rpc DeleteToDo (DeleteToDoRequest) returns (DeleteToDoResponse) {
 }
 }
 
+enum RouteTravelMode {
+  // No travel mode specified. Defaults to `DRIVE`.
+  TRAVEL_MODE_UNSPECIFIED = 0;
+
+  // Travel by passenger car.
+  DRIVE = 1;
+
+  // Travel by bicycle.
+  BICYCLE = 2;
+
+  // Travel by walking.
+  WALK = 3;
+
+  // Two-wheeled, motorized vehicle. For example, motorcycle. Note that this
+  // differs from the `BICYCLE` travel mode which covers human-powered mode.
+  TWO_WHEELER = 4;
+
+  TRUCK = 6;
+
+  // Travel by public transit routes, where available.
+  TRANSIT = 7;
+}
+
 message CreateToDoRequest {
     string title = 1;
     string description = 2;
+    RouteTravelMode travel_mode = 3;
 }
 
 message CreateToDoResponse {
@@ -64,6 +88,7 @@ message ReadToDoResponse {
     string title = 2;
     string description = 3;
     string to_do_status = 4;
+    RouteTravelMode travel_mode = 5;
 }
 
 message GetAllRequest {}
@@ -77,6 +102,7 @@ message UpdateToDoRequest {
     string title = 2;
     string description = 3;
     string to_do_status = 4;
+    RouteTravelMode travel_mode = 5;
 }
 
 message UpdateToDoResponse {
@@ -90,3 +116,4 @@ message DeleteToDoRequest {
 message DeleteToDoResponse {
     int32 id = 1;
 }
+

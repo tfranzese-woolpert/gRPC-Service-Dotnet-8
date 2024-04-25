@@ -9,4 +9,6 @@ public class ToDoItem
     public string? Description { get; set; }
     
     public string ToDoStatus { get; set; } = "NEW";
+
+    public RouteTravelMode? TravelMode { get; set; }
 }

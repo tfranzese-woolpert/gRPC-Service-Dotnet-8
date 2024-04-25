@@ -1,0 +1,9 @@
+﻿Migration (from Package Manager Console with EFCore Tools installed):
+https://learn.microsoft.com/en-us/ef/core/cli/powershell
+
+Add-Migration -Name AddRouteTravelMode -OutputDir Migrations -Context AppDbContext
+
+Update-Database -verbose -Migration AddRouteTravelMode -Context AppDbContext
+
+Related issues:
+https://github.com/grpc/grpc-dotnet/issues/167

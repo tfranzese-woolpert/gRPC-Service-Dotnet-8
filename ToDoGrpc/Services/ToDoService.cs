@@ -20,7 +20,8 @@ public class ToDoService : ToDoIt.ToDoItBase
         var toDoItem = new ToDoItem
         {
             Title = request.Title,
-            Description = request.Description
+            Description = request.Description,
+            TravelMode = request.TravelMode
         };
 
         await _dbContext.AddAsync(toDoItem);
@@ -46,7 +47,8 @@ public class ToDoService : ToDoIt.ToDoItBase
                 Id = toDoItem.Id,
                 Title = toDoItem.Title,
                 Description = toDoItem.Description,
-                ToDoStatus = toDoItem.ToDoStatus
+                ToDoStatus = toDoItem.ToDoStatus,
+                TravelMode = toDoItem.TravelMode ?? RouteTravelMode.TravelModeUnspecified
             });
         }
 
@@ -65,7 +67,8 @@ public class ToDoService : ToDoIt.ToDoItBase
                 Id = x.Id,
                 Title = x.Title,
                 Description = x.Description,
-                ToDoStatus = x.ToDoStatus
+                ToDoStatus = x.ToDoStatus,
+                TravelMode = x.TravelMode ?? RouteTravelMode.TravelModeUnspecified
             });
         });
 
@@ -85,6 +88,7 @@ public class ToDoService : ToDoIt.ToDoItBase
         toDoItem.Title = request.Title;
         toDoItem.Description = request.Description;
         toDoItem.ToDoStatus = request.ToDoStatus;
+        toDoItem.TravelMode = request.TravelMode;
 
         await _dbContext.SaveChangesAsync();
 
