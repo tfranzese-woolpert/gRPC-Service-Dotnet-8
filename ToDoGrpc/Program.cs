@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ToDoGrpc;
 using ToDoGrpc.Services;
 
@@ -8,8 +9,23 @@ builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseSqlite("DataSource=ToDoD
 
 // Add services to the container.
 builder.Services.AddGrpc().AddJsonTranscoding();
+builder.Services.AddGrpcSwagger();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1",
+        new OpenApiInfo { Title = "ToDo gRPC", Version = "v1" });
+
+    var filePath = Path.Combine(AppContext.BaseDirectory, "ToDoGrpc.xml");
+    c.IncludeXmlComments(filePath);
+    c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
+});
 
 var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo gRPC V1");
+});
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
