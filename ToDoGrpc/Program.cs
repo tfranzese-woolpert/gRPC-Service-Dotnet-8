@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using ToDoGrpc;
 using ToDoGrpc.Services;
 
@@ -21,6 +24,33 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    if (HttpMethods.IsPost(context.Request.Method) && context.Request.Path.StartsWithSegments(PathString.FromUriComponent("/v1/todo")))
+    {
+        var node = await JsonNode.ParseAsync(context.Request.Body);
+        var obj = node?.AsObject();
+        if (obj?.TryGetPropertyValue("travelMode", out JsonNode? propertyNode) is true && propertyNode?.GetValueKind() == JsonValueKind.String)
+        {
+            var value = propertyNode.GetValue<string>();
+            var options = new JsonSerializerOptions
+            {
+                DictionaryKeyPolicy = JsonNamingPolicy.SnakeCaseUpper
+            };
+            var tempJson = JsonSerializer.Serialize(new Dictionary<string, string?> { { value, null } }, options);
+            var convertedPropertyName = JsonSerializer.Deserialize<Dictionary<string, string?>>(tempJson)!.Keys.First()!;
+            obj![propertyNode.GetPropertyName()] = convertedPropertyName;
+        }
+
+        var json = obj?.ToJsonString() ?? "{}";
+        var buffer = Encoding.UTF8.GetBytes(obj?.ToJsonString() ?? "{}");
+        context.Request.Body = new MemoryStream(buffer);
+        context.Request.ContentLength = buffer.Length;
+    }
+    await next.Invoke();
+});
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
